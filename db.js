@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 //define the MongoDB connection URL
-const MongoURL = 'mongodb://localhost:27017/mydatabase'
+// const MongoURL = 'mongodb://localhost:27017/mydatabase';
+const MongoURL = process.env.MONGODB_URL;
+;
 
 //Set Up MongoDB connection
 
@@ -10,9 +13,9 @@ const MongoURL = 'mongodb://localhost:27017/mydatabase'
 //     useUnifiedTopology: true,
 
 // });
-mongoose.connect("mongodb://localhost:27017/mydatabase", {
-
-});
+mongoose.connect(MongoURL)
+    .then(() => console.log('Connected to MongoDB server'))
+    .catch((err) => console.log('MongoDB connection error:', err));
 
 const db = mongoose.connection;
 
@@ -30,4 +33,4 @@ db.on('disconnect', ()=>{
     console.log('MongoDB disconnected');
 })
 
-module.export = db
+module.exports = db
