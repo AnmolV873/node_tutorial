@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 //Define Person Schema
 const personSchema = new mongoose.Schema({
@@ -28,6 +29,14 @@ const personSchema = new mongoose.Schema({
     },
     salary:{
         type: Number,
+        require: true
+    },
+    username:{
+        type: String,
+        required: true
+    },
+    password:{
+        type: String,
         require: true
     }
 });
