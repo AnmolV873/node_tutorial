@@ -13,15 +13,15 @@ const personSchema = new mongoose.Schema({
     work:{
         type: String,
         enum: ['Chef', 'waiter', 'Manager'],
-        require: true
+        required: true
     },
     mobile:{
         type: Number,
-        require: true
+        required: true
     },
     email:{
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     address:{
@@ -29,7 +29,7 @@ const personSchema = new mongoose.Schema({
     },
     salary:{
         type: Number,
-        require: true
+        required: true
     },
     username:{
         type: String,
@@ -37,9 +37,42 @@ const personSchema = new mongoose.Schema({
     },
     password:{
         type: String,
-        require: true
+        required: true
     }
 });
+
+
+personSchema.pre('save', async function (next){
+    const person = this;
+ 
+    //Hash password only if it has been modified or it's new
+    if(!person.isModified('password')) return next();
+    try{
+        //hash password generation or generating a salt
+        const salt = await bcrypt.genSalt(10);
+
+        //hash password with salt
+        const hashpassword = await bcrypt.hash(person.password, salt);
+
+        //Override the plain password with the hashed one
+        person.password = hashpassword;
+        next();
+    }catch(err){
+        return next(err);
+    }
+})
+
+
+personSchema.methods.comparePassword = async function(candidatePassword) {
+    try{
+        //Use bcrypt to compare the provided password with the hashed password
+        const isMatch = await bcrypt.compare(candidatePassword, this.password);
+        return isMatch
+    }catch(err){
+        throw err; 
+    }   
+}
+
 
 //Create Person Model
 const Person = mongoose.model('Person', personSchema);

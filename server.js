@@ -3,7 +3,7 @@ const app = express();
 const db = require('./db');
 require('dotenv').config();
 const passport = require('./auth');
-
+const mongoose = require('mongoose');
 
 
 //Import the router file
@@ -27,7 +27,7 @@ app.get('/',function (req, res) {
 
 
 //Use the routers
-app.use('/person', locaAuthMiddleware, personRoutes);
+app.use('/person', personRoutes);
 app.use('/menu',  menuRoutes);
 
 app.listen(PORT)
